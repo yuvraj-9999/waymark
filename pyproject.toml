@@ -1,0 +1,30 @@
+[project]
+name = "waymark"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "Yuvraj Sabale", email = "yuvrajsabale999@gmail.com" }
+]
+requires-python = ">=3.13"
+dependencies = [
+    "langgraph>=1.2.18",
+    "networkx>=3.7",
+    "openai>=3.41.0",
+    "pydantic>=2.14.1",
+    "pydantic-settings>=2.16.2",
+    "streamlit>=1.66.1",
+]
+
+[project.scripts]
+waymark = "waymark:main"
+
+[build-system]
+requires = ["uv_build>=0.12.19,<0.13.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "pytest>=9.2.0",
+    "ruff>=0.17.3",
+]
