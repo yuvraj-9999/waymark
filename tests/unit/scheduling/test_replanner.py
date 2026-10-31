@@ -166,3 +166,52 @@ def test_respects_all_dependencies(
     assert tasks["C"].start_date >= tasks["B"].finish_date
     assert tasks["E"].start_date >= tasks["C"].finish_date
     assert tasks["E"].start_date >= tasks["D"].finish_date
+
+
+
+def test_rejects_incomplete_original_schedule(
+    project_plan,
+    original_schedule,
+    disruption,
+):
+    incomplete_schedule = Schedule(
+        tasks=[
+            task
+            for task in original_schedule.tasks
+            if task.task_id != "E"
+        ]
+    )
+
+    with pytest.raises(
+        ValueError,
+        match="Original schedule is missing tasks: E",
+    ):
+        replan_schedule(
+            project_plan,
+            incomplete_schedule,
+            disruption,
+        )
+
+def test_rejects_unexpected_tasks(
+    project_plan, original_schedule, disruption,
+):
+    unexpected_schedule = Schedule(
+        tasks=[
+            *original_schedule.tasks,
+            ScheduledTask(
+                task_id="X",
+                start_date=date(2026, 12, 1),
+                finish_date=date(2026, 12, 2),
+            ),
+        ]
+    )
+
+    with pytest.raises(
+        ValueError,
+        match="Original schedule contains unknown tasks: X",
+    ):
+        replan_schedule(
+            project_plan,
+            unexpected_schedule,
+            disruption,
+        )

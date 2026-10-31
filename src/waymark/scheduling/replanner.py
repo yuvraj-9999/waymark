@@ -11,6 +11,26 @@ from waymark.schemas.schedule import Schedule, ScheduledTask
 def replan_schedule(plan: ProjectPlan, original_schedule: Schedule, disruption: Disruption) -> Schedule:
     """Generate a revised schedule while minimizing unnecessary changes."""
 
+    planned_task_ids = {task.id for task in plan.tasks}
+
+    scheduled_task_ids = {    
+    task.task_id for task in original_schedule.tasks    }
+
+    missing_tasks = planned_task_ids - scheduled_task_ids
+
+    if missing_tasks:
+        raise ValueError(
+            f"Original schedule is missing tasks: "
+            f"{', '.join(sorted(missing_tasks))    }"
+    )
+
+    unexpected_tasks = scheduled_task_ids - planned_task_ids
+
+    if unexpected_tasks:        
+        raise ValueError(
+            f"Original schedule contains unknown tasks: {', '.join(sorted(unexpected_tasks))}"
+        )
+
     affected_tasks = analyze_disruption_impact(plan,disruption)
 
     graph = build_dependency_graph(plan)
