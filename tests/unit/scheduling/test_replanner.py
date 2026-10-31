@@ -2,11 +2,11 @@ from datetime import date
 
 import pytest
 
-from waymark.schemas.task import Task
+from waymark.scheduling.replanner import replan_schedule
 from waymark.schemas.disruption import Disruption
 from waymark.schemas.plan import ProjectPlan
 from waymark.schemas.schedule import Schedule, ScheduledTask
-from waymark.scheduling.replanner import replan_schedule
+from waymark.schemas.task import Task
 
 
 @pytest.fixture
@@ -141,9 +141,7 @@ def test_preserves_unaffected_tasks(
     )
 
     tasks = {task.task_id: task for task in revised.tasks}
-    original = {
-        task.task_id: task for task in original_schedule.tasks
-    }
+    original = {task.task_id: task for task in original_schedule.tasks}
 
     assert tasks["A"] == original["A"]
     assert tasks["D"] == original["D"]
@@ -168,18 +166,13 @@ def test_respects_all_dependencies(
     assert tasks["E"].start_date >= tasks["D"].finish_date
 
 
-
 def test_rejects_incomplete_original_schedule(
     project_plan,
     original_schedule,
     disruption,
 ):
     incomplete_schedule = Schedule(
-        tasks=[
-            task
-            for task in original_schedule.tasks
-            if task.task_id != "E"
-        ]
+        tasks=[task for task in original_schedule.tasks if task.task_id != "E"]
     )
 
     with pytest.raises(
@@ -192,8 +185,11 @@ def test_rejects_incomplete_original_schedule(
             disruption,
         )
 
+
 def test_rejects_unexpected_tasks(
-    project_plan, original_schedule, disruption,
+    project_plan,
+    original_schedule,
+    disruption,
 ):
     unexpected_schedule = Schedule(
         tasks=[

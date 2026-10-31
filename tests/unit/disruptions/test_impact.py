@@ -1,4 +1,3 @@
-
 import pytest
 
 from waymark.disruptions.impact import analyze_disruption_impact
@@ -19,7 +18,12 @@ def project_plan():
             Task(id="B", name="Decoration", duration_days=2, dependencies=["A"]),
             Task(id="C", name="Stage Setup", duration_days=2, dependencies=["B"]),
             Task(id="D", name="Sound Setup", duration_days=1, dependencies=["A"]),
-            Task(id="E", name="Final Inspection", duration_days=1, dependencies=["C", "D"]),
+            Task(
+                id="E",
+                name="Final Inspection",
+                duration_days=1,
+                dependencies=["C", "D"],
+            ),
         ],
     )
 

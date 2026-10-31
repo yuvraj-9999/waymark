@@ -1,6 +1,6 @@
-import networkx as nx
-
 from datetime import timedelta
+
+import networkx as nx
 
 from waymark.disruptions.impact import analyze_disruption_impact
 from waymark.graph.dependencies import build_dependency_graph
@@ -8,38 +8,37 @@ from waymark.schemas.disruption import Disruption
 from waymark.schemas.plan import ProjectPlan
 from waymark.schemas.schedule import Schedule, ScheduledTask
 
-def replan_schedule(plan: ProjectPlan, original_schedule: Schedule, disruption: Disruption) -> Schedule:
+
+def replan_schedule(
+    plan: ProjectPlan, original_schedule: Schedule, disruption: Disruption
+) -> Schedule:
     """Generate a revised schedule while minimizing unnecessary changes."""
 
     planned_task_ids = {task.id for task in plan.tasks}
 
-    scheduled_task_ids = {    
-    task.task_id for task in original_schedule.tasks    }
+    scheduled_task_ids = {task.task_id for task in original_schedule.tasks}
 
     missing_tasks = planned_task_ids - scheduled_task_ids
 
     if missing_tasks:
         raise ValueError(
-            f"Original schedule is missing tasks: "
-            f"{', '.join(sorted(missing_tasks))    }"
-    )
+            f"Original schedule is missing tasks: {', '.join(sorted(missing_tasks))}"
+        )
 
     unexpected_tasks = scheduled_task_ids - planned_task_ids
 
-    if unexpected_tasks:        
+    if unexpected_tasks:
         raise ValueError(
             f"Original schedule contains unknown tasks: {', '.join(sorted(unexpected_tasks))}"
         )
 
-    affected_tasks = analyze_disruption_impact(plan,disruption)
+    affected_tasks = analyze_disruption_impact(plan, disruption)
 
     graph = build_dependency_graph(plan)
 
-    original_tasks = {task.task_id:task for task in original_schedule.tasks}
+    original_tasks = {task.task_id: task for task in original_schedule.tasks}
 
-    plan_tasks = {
-        task.id:task for task in plan.tasks
-    }
+    plan_tasks = {task.id: task for task in plan.tasks}
 
     scheduled_tasks: dict[str, ScheduledTask] = {}
 
@@ -49,9 +48,7 @@ def replan_schedule(plan: ProjectPlan, original_schedule: Schedule, disruption: 
 
     affected_graph = graph.subgraph(affected_tasks)
 
-    topological_order = list(
-        nx.topological_sort(affected_graph)
-    )
+    topological_order = list(nx.topological_sort(affected_graph))
 
     for task_id in topological_order:
         task = plan_tasks[task_id]
@@ -62,32 +59,21 @@ def replan_schedule(plan: ProjectPlan, original_schedule: Schedule, disruption: 
             for dependency_id in task.dependencies
         ]
 
-        earliest_start = max(
-            [original_task.start_date, *dependency_finish_dates]
-        )
+        earliest_start = max([original_task.start_date, *dependency_finish_dates])
 
         if task_id == disruption.task_id:
-            delayed_start = (
-                original_task.start_date + timedelta(
-                    days = disruption.delay_days
-                )
+            delayed_start = original_task.start_date + timedelta(
+                days=disruption.delay_days
             )
 
-            earliest_start = max(
-                earliest_start, delayed_start
-            )
+            earliest_start = max(earliest_start, delayed_start)
 
         finish_date = earliest_start + timedelta(days=task.duration_days)
 
         scheduled_tasks[task_id] = ScheduledTask(
-            task_id = task_id,
-            start_date = earliest_start,
-            finish_date= finish_date,
+            task_id=task_id,
+            start_date=earliest_start,
+            finish_date=finish_date,
         )
 
-    return Schedule(
-        tasks = [
-            scheduled_tasks[task.id]
-            for task in plan.tasks
-        ]
-    )
+    return Schedule(tasks=[scheduled_tasks[task.id] for task in plan.tasks])

@@ -1,4 +1,3 @@
-
 from waymark.graph.dependencies import get_downstream_tasks
 from waymark.schemas.disruption import Disruption
 from waymark.schemas.plan import ProjectPlan
@@ -13,9 +12,7 @@ def analyze_disruption_impact(
     task_ids = {task.id for task in plan.tasks}
 
     if disruption.task_id not in task_ids:
-        raise ValueError(
-            f"Unknown task ID: {disruption.task_id}"
-        )
+        raise ValueError(f"Unknown task ID: {disruption.task_id}")
 
     affected_tasks = get_downstream_tasks(
         plan,
