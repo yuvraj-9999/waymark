@@ -117,6 +117,19 @@ def main():
     print("Errors:", result["validation_errors"])
     print("Schedule valid:", result["is_schedule_valid"])
 
+    recovery_plan = result["recovery_plan"]
+
+    assert len(recovery_plan.strategies) >= 1
+    assert recovery_plan.recommendation.strip()
+
+    for strategy in recovery_plan.strategies:
+        assert strategy.name.strip()
+        assert strategy.description.strip()
+        assert isinstance(strategy.affected_tasks, list)
+
+    print("\nRECOVERY PLAN:")
+    print(recovery_plan.model_dump_json(indent=2))
+
     print("\nALL PIPELINE CHECKS PASSED!")
 
 

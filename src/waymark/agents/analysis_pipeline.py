@@ -1,4 +1,5 @@
 from waymark.agents.analyst import analyze_disruption
+from waymark.agents.repair_planner import generate_recovery_plan
 from waymark.disruptions.impact import analyze_disruption_impact
 from waymark.scheduling.replanner import replan_schedule
 from waymark.schemas.plan import ProjectPlan
@@ -12,7 +13,7 @@ def process_disruption(
     plan: ProjectPlan,
     original_schedule: Schedule,
 ) -> dict:
-    """Extract a disruption, calculate its impact, and replan."""
+    """Analyze a disruption, replan the schedule, and generate recovery strategies."""
 
     # 1. Extract structured disruption using Gemini.
     disruption = analyze_disruption(
@@ -45,10 +46,20 @@ def process_disruption(
         schedule=revised_schedule,
     )
 
+    recovery_plan = generate_recovery_plan(
+        plan=plan,
+        original_schedule=original_schedule,
+        disruption=disruption,
+        affected_tasks=set(affected_tasks),
+        revised_schedule=revised_schedule,
+        validation_errors=validation_errors,
+    )
+
     return {
         "disruption": disruption,
         "affected_tasks": affected_tasks,
         "revised_schedule": revised_schedule,
         "validation_errors": validation_errors,
         "is_schedule_valid": not validation_errors,
+        "recovery_plan": recovery_plan,
     }
