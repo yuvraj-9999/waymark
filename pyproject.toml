@@ -8,9 +8,9 @@ authors = [
 ]
 requires-python = ">=3.13"
 dependencies = [
+    "google-genai>=2.34.0",
     "langgraph>=1.2.18",
     "networkx>=3.7",
-    "openai>=3.41.0",
     "pydantic>=2.14.1",
     "pydantic-settings>=2.16.2",
     "streamlit>=1.66.1",
