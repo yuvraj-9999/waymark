@@ -1,4 +1,3 @@
-from scripts.test_analysis_pipeline import plan
 from tests.unit.scheduling.test_schedule_comparison import revised_schedule
 from waymark.agents.analyst import analyze_disruption
 from waymark.agents.repair_planner import generate_recovery_plan
