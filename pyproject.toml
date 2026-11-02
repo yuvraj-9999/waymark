@@ -9,6 +9,7 @@ authors = [
 requires-python = ">=3.13"
 dependencies = [
     "google-genai>=2.34.0",
+    "httpx>=0.28.1",
     "langgraph>=1.2.18",
     "networkx>=3.7",
     "pydantic>=2.14.1",
