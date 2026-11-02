@@ -3,8 +3,8 @@ from typing import TypedDict
 from waymark.schemas.disruption import Disruption
 from waymark.schemas.plan import ProjectPlan
 from waymark.schemas.recovery import RecoveryPlan
-from waymark.schemas.review import RecoveryReview
 from waymark.schemas.resource_scout import ResourceScoutResult
+from waymark.schemas.review import RecoveryReview
 from waymark.schemas.schedule import Schedule
 
 

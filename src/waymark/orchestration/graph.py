@@ -1,16 +1,24 @@
-from networkx.algorithms.connectivity.kcomponents import build_k_number_dict
 from langgraph.graph import END, START, StateGraph
 
-from waymark.orchestration.nodes import analyst_node,impact_node,replanning_node,validation_node,resource_scout_node,repair_planner_node,reviewer_node
+from waymark.orchestration.nodes import (
+    analyst_node,
+    impact_node,
+    repair_planner_node,
+    replanning_node,
+    resource_scout_node,
+    reviewer_node,
+    validation_node,
+)
 from waymark.orchestration.state import WaymarkState
+
 
 def build_graph():
     """Build and compile the Waymark worlflow."""
 
     graph = StateGraph(WaymarkState)
 
-    graph.add_node("analyst",analyst_node)
-    graph.add_node("impact",impact_node)
+    graph.add_node("analyst", analyst_node)
+    graph.add_node("impact", impact_node)
     graph.add_node("replan", replanning_node)
     graph.add_node("validate", validation_node)
     graph.add_node("resource_scout", resource_scout_node)
@@ -27,5 +35,6 @@ def build_graph():
     graph.add_edge("reviewer", END)
 
     return graph.compile()
+
 
 waymark_graph = build_graph()
