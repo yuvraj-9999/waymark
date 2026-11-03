@@ -126,6 +126,8 @@ def review_recovery_plan(
         - Every strategy is acceptable.
         - No strategy has blocking severity.
         - Deterministic schedule validation passes.
+        - Revise the specific strategy identified by the Review        er.
+        - Preserve previously acceptable strategies unless a change is necessary.
 
     Return a structured review.
     """

@@ -1,7 +1,10 @@
+
 from waymark.agents.analyst import analyze_disruption
+from waymark.agents.execution import generate_execution_plan
 from waymark.agents.repair_planner import generate_recovery_plan
 from waymark.agents.resource_scout import scout_resources
 from waymark.agents.reviewer import review_recovery_plan
+from waymark.artifacts.execution_artifacts import generate_execution_artifacts
 from waymark.disruptions.impact import analyze_disruption_impact
 from waymark.orchestration.state import WaymarkState
 from waymark.scheduling.replanner import replan_schedule
@@ -75,7 +78,7 @@ def resource_scout_node(state: WaymarkState) -> dict:
 
 
 def repair_planner_node(state: WaymarkState) -> dict:
-    """Generate recovery strategies."""
+    """Generate or revise recovery strategies."""
 
     recovery_plan = generate_recovery_plan(
         plan=state["project_plan"],
@@ -84,9 +87,14 @@ def repair_planner_node(state: WaymarkState) -> dict:
         affected_tasks=set(state["affected_tasks"]),
         revised_schedule=state["revised_schedule"],
         validation_errors=state["validation_errors"],
+        review_feedback=state.get("review_feedback"),
+        previous_recovery_plan=state.get("recovery_plan"),
     )
-
-    return {"recovery_plan": recovery_plan}
+    
+    return {
+        "recovery_plan": recovery_plan,
+        "revision_count": state.get("revision_count", 0) + 1,
+    }
 
 
 def reviewer_node(state: WaymarkState) -> dict:
@@ -99,7 +107,65 @@ def reviewer_node(state: WaymarkState) -> dict:
         validation_errors=state["validation_errors"],
     )
 
+    feedback_parts = [
+        recovery_review.overall_assessment,
+    ]
+
+    for strategy_review in recovery_review.strategy_reviews:
+
+        feedback_parts.append(
+            f"Strategy: {strategy_review.strategy_name}\n"
+            f"Acceptable: {strategy_review.is_acceptable}\n"
+            f"Severity: {strategy_review.severity}\n"
+            f"Issues: {'; '.join(strategy_review.issues) or 'None'}\n"
+            f"Suggestions: {'; '.join(strategy_review.suggestions) or 'None'}"
+        )
+
+    review_feedback = "\n\n".join(feedback_parts)
+
     return {
         "recovery_review": recovery_review,
         "approved": recovery_review.approved,
+        "review_feedback": review_feedback,
     }
+
+
+def execution_node(state: WaymarkState) -> dict:
+    """Generate execution steps and stakeholder communication drafts."""
+
+    if not state["approved"]:
+        raise ValueError(
+            "Cannot generate an execution plan for an unapproved recovery plan."
+        )
+
+    execution_plan = generate_execution_plan(
+        plan=state["project_plan"],
+        disruption=state["disruption"],
+        affected_tasks=state["affected_tasks"],
+        revised_schedule=state["revised_schedule"],
+        recovery_plan=state["recovery_plan"],
+        recovery_review=state["recovery_review"],
+    )
+
+    return {"execution_plan": execution_plan}
+
+
+def artifact_node(state: WaymarkState) -> dict:
+    """Generate downloadable recovery and execution artifacts."""
+
+    if not state["approved"]:
+        raise ValueError("Cannot generate artifacts for an unapproved recovery plan.")
+
+    execution_artifacts = generate_execution_artifacts(
+        plan=state["project_plan"],
+        disruption=state["disruption"],
+        affected_tasks=state["affected_tasks"],
+        original_schedule=state["original_schedule"],
+        revised_schedule=state["revised_schedule"],
+        recovery_plan=state["recovery_plan"],
+        recovery_review=state["recovery_review"],
+        execution_plan=state["execution_plan"],
+        resource_scout_result=state.get("resource_scout_result"),
+    )
+
+    return {"execution_artifacts": execution_artifacts}

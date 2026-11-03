@@ -1,6 +1,7 @@
-from typing import TypedDict
+from typing import NotRequired, TypedDict
 
 from waymark.schemas.disruption import Disruption
+from waymark.schemas.execution import ExecutionPlan
 from waymark.schemas.plan import ProjectPlan
 from waymark.schemas.recovery import RecoveryPlan
 from waymark.schemas.resource_scout import ResourceScoutResult
@@ -30,9 +31,11 @@ class WaymarkState(TypedDict):
     # Recovery planning and review
     recovery_plan: RecoveryPlan
     recovery_review: RecoveryReview
-    revision_count: int
+    revision_count: NotRequired[int]
+    review_feedback: NotRequired[str]
 
     # Execution
     approved: bool
     execution_artifacts: dict[str, str]
     execution_errors: list[str]
+    execution_plan: ExecutionPlan
