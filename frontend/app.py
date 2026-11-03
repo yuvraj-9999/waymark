@@ -1,6 +1,5 @@
-
-from pathlib import Path
 from datetime import date
+from pathlib import Path
 
 import streamlit as st
 
@@ -87,9 +86,7 @@ st.markdown(
 st.divider()
 
 st.markdown("### Create your project")
-st.markdown(
-    "Define your project, add its tasks, and establish dependencies."
-)
+st.markdown("Define your project, add its tasks, and establish dependencies.")
 
 if "tasks" not in st.session_state:
     st.session_state.tasks = []
@@ -106,7 +103,6 @@ st.markdown(
 )
 
 with st.container(border=True):
-
     project_name = st.text_input(
         "Project name",
         placeholder="Website Development",
@@ -132,7 +128,6 @@ st.markdown(
 )
 
 with st.container(border=True):
-
     task_name = st.text_input(
         "Task name",
         placeholder="Design UI",
@@ -150,8 +145,7 @@ with st.container(border=True):
         )
 
     task_options = {
-        task["id"]: f'{task["name"]} ({task["id"]})'
-        for task in st.session_state.tasks
+        task["id"]: f"{task['name']} ({task['id']})" for task in st.session_state.tasks
     }
 
     with col2:
@@ -162,7 +156,6 @@ with st.container(border=True):
         )
 
     if st.button("Add task", icon=":material/add:"):
-
         if not task_name.strip():
             st.warning("Enter a task name first.")
 
@@ -174,8 +167,7 @@ with st.container(border=True):
 
         else:
             existing_ids = {
-                int(task["id"].split("-")[-1])
-                for task in st.session_state.tasks
+                int(task["id"].split("-")[-1]) for task in st.session_state.tasks
             }
 
             next_id = max(existing_ids, default=0) + 1
@@ -199,23 +191,22 @@ with st.container(border=True):
             st.rerun()
 
 if st.session_state.tasks:
-
     st.markdown("#### Added tasks")
 
     task_options = {
-        task["id"]: f'{task["name"]} ({task["id"]})'
-        for task in st.session_state.tasks
+        task["id"]: f"{task['name']} ({task['id']})" for task in st.session_state.tasks
     }
 
     task_rows = [
         {
             "ID": task["id"],
             "Task": task["name"],
-            "Duration": f'{task["duration_days"]} days',
+            "Duration": f"{task['duration_days']} days",
             "Dependencies": ", ".join(
                 task_options.get(dependency, dependency)
                 for dependency in task["dependencies"]
-            ) or "None",
+            )
+            or "None",
         }
         for task in st.session_state.tasks
     ]
@@ -233,10 +224,8 @@ if st.session_state.tasks:
     )
 
     if st.button("Remove selected task"):
-
         st.session_state.tasks = [
-            task for task in st.session_state.tasks
-            if task["id"] != task_to_remove
+            task for task in st.session_state.tasks if task["id"] != task_to_remove
         ]
 
         for task in st.session_state.tasks:
@@ -261,7 +250,6 @@ if st.button(
     type="primary",
     use_container_width=True,
 ):
-
     if not project_name.strip():
         st.error("Enter a project name.")
 
@@ -272,12 +260,8 @@ if st.button(
         st.error("Add at least one task.")
 
     else:
-
         try:
-            tasks = [
-                Task(**task)
-                for task in st.session_state.tasks
-            ]
+            tasks = [Task(**task) for task in st.session_state.tasks]
 
             project_plan = ProjectPlan(
                 id="WAYMARK-PROJECT",
@@ -298,11 +282,10 @@ if st.button(
 
             st.success("Project schedule generated successfully.")
 
-        except Exception as exc:
+        except Exception as exc:  # noqa: BLE001
             st.error(f"Unable to generate schedule: {exc}")
 
 if st.session_state.project_plan is not None:
-
     project_plan = st.session_state.project_plan
     original_schedule = st.session_state.original_schedule
 
@@ -319,10 +302,7 @@ if st.session_state.project_plan is not None:
     col2.metric("Project start", str(project_plan.start_date))
     col3.metric("Deadline", str(project_plan.deadline))
 
-    task_names = {
-        task.id: task.name
-        for task in project_plan.tasks
-    }
+    task_names = {task.id: task.name for task in project_plan.tasks}
 
     schedule_rows = [
         {
@@ -347,17 +327,11 @@ if st.session_state.project_plan is not None:
     )
 
     st.markdown("### What happened to your project?")
-    st.markdown(
-        "Describe the disruption affecting your project schedule."
-    )
+    st.markdown("Describe the disruption affecting your project schedule.")
 
-    task_options = {
-        task.id: f"{task.name} ({task.id})"
-        for task in project_plan.tasks
-    }
+    task_options = {task.id: f"{task.name} ({task.id})" for task in project_plan.tasks}
 
     with st.container(border=True):
-
         selected_task_id = st.selectbox(
             "Affected task",
             options=list(task_options.keys()),
@@ -373,8 +347,7 @@ if st.session_state.project_plan is not None:
         disruption_reason = st.text_area(
             "Reason for disruption",
             placeholder=(
-                "Example: The frontend developer is unavailable "
-                "due to illness."
+                "Example: The frontend developer is unavailable due to illness."
             ),
             height=100,
         )
@@ -393,12 +366,10 @@ if st.session_state.project_plan is not None:
             type="primary",
             use_container_width=True,
         ):
-
             if not disruption_reason.strip():
                 st.error("Please describe the reason for disruption.")
 
             else:
-
                 try:
                     disruption = Disruption(
                         task_id=selected_task_id,
@@ -407,26 +378,20 @@ if st.session_state.project_plan is not None:
                     )
 
                     st.session_state.disruption = disruption
-                    st.session_state.disruption_context = (
-                        disruption_context.strip()
-                    )
+                    st.session_state.disruption_context = disruption_context.strip()
                     st.session_state.workflow_result = None
 
                     st.success("Disruption details saved.")
 
-                except Exception as exc:
+                except Exception as exc:  # noqa: BLE001
                     st.error(f"Invalid disruption: {exc}")
 
     if "disruption" in st.session_state:
-
         disruption = st.session_state.disruption
 
         st.markdown("#### Confirmed disruption")
 
-        st.write(
-            f"**Affected task:** "
-            f"{task_options[disruption.task_id]}"
-        )
+        st.write(f"**Affected task:** {task_options[disruption.task_id]}")
 
         st.write(f"**Delay:** {disruption.delay_days} days")
         st.write(f"**Reason:** {disruption.reason}")
@@ -436,7 +401,6 @@ if st.session_state.project_plan is not None:
             type="primary",
             use_container_width=True,
         ):
-
             st.session_state.workflow_result = None
 
             disruption_description = (
@@ -457,18 +421,16 @@ if st.session_state.project_plan is not None:
                     "Waymark is analyzing the disruption and "
                     "generating recovery strategies..."
                 ):
-
                     result = waymark_graph.invoke(initial_state)
 
                 st.session_state.workflow_result = result
 
                 st.success("Disruption analysis completed.")
 
-            except Exception as exc:
+            except Exception as exc:  # noqa: BLE001
                 st.error(f"Workflow failed: {exc}")
 
 if st.session_state.workflow_result is not None:
-
     result = st.session_state.workflow_result
 
     st.divider()
@@ -485,17 +447,12 @@ if st.session_state.workflow_result is not None:
     st.write("**Affected tasks:**")
 
     if affected_tasks:
-
         affected_task_names = {
-            task.id: task.name
-            for task in st.session_state.project_plan.tasks
+            task.id: task.name for task in st.session_state.project_plan.tasks
         }
 
         for task_id in affected_tasks:
-            st.write(
-                f"- {affected_task_names.get(task_id, task_id)} "
-                f"({task_id})"
-            )
+            st.write(f"- {affected_task_names.get(task_id, task_id)} ({task_id})")
 
     else:
         st.info("No affected tasks were returned.")
@@ -503,12 +460,10 @@ if st.session_state.workflow_result is not None:
     revised_schedule = result.get("revised_schedule")
 
     if revised_schedule:
-
         st.markdown("### Revised schedule")
 
         task_names = {
-            task.id: task.name
-            for task in st.session_state.project_plan.tasks
+            task.id: task.name for task in st.session_state.project_plan.tasks
         }
 
         revised_rows = [
@@ -527,11 +482,9 @@ if st.session_state.workflow_result is not None:
         )
 
     if result.get("is_schedule_valid"):
-
         st.success("The revised schedule passed validation.")
 
     else:
-
         st.warning("The revised schedule has validation issues.")
 
         for error in result.get("validation_errors", []):
@@ -549,32 +502,22 @@ if st.session_state.workflow_result is not None:
     resource_scout_result = result.get("resource_scout_result")
 
     if resource_scout_result:
-
         if not resource_scout_result.search_performed:
-
             st.info(resource_scout_result.explanation)
 
         else:
-
-            st.caption(
-                f"Search query: {resource_scout_result.search_query}"
-            )
+            st.caption(f"Search query: {resource_scout_result.search_query}")
 
             st.write(resource_scout_result.explanation)
 
             if resource_scout_result.candidates:
-
                 for index, candidate in enumerate(
                     resource_scout_result.candidates,
                     start=1,
                 ):
-
-                    candidate_title = (
-                        candidate.title or f"Resource candidate {index}"
-                    )
+                    candidate_title = candidate.title or f"Resource candidate {index}"
 
                     with st.expander(candidate_title):
-
                         if candidate.source:
                             st.caption(f"Source: {candidate.source}")
 
@@ -594,14 +537,12 @@ if st.session_state.workflow_result is not None:
                             )
 
             else:
-
                 st.warning(
                     "The search was performed, but no usable resource "
                     "candidates were returned."
                 )
 
     else:
-
         st.warning(
             "Resource discovery results are not available in the workflow state."
         )
@@ -618,17 +559,14 @@ if st.session_state.workflow_result is not None:
     recovery_plan = result.get("recovery_plan")
 
     if recovery_plan:
-
         for index, strategy in enumerate(
             recovery_plan.strategies,
             start=1,
         ):
-
             with st.expander(
                 f"Strategy {index}: {strategy.name}",
                 expanded=index == 1,
             ):
-
                 st.write(strategy.description)
 
                 st.markdown("**Affected tasks**")
@@ -655,7 +593,6 @@ if st.session_state.workflow_result is not None:
     recovery_review = result.get("recovery_review")
 
     if recovery_review:
-
         st.divider()
 
         st.markdown(
@@ -673,29 +610,21 @@ if st.session_state.workflow_result is not None:
         st.write(recovery_review.overall_assessment)
 
         for review in recovery_review.strategy_reviews:
-
             with st.expander(review.strategy_name):
-
                 st.write(
                     "**Status:** "
-                    + (
-                        "Acceptable"
-                        if review.is_acceptable
-                        else "Needs revision"
-                    )
+                    + ("Acceptable" if review.is_acceptable else "Needs revision")
                 )
 
                 st.write(f"**Severity:** {review.severity}")
 
                 if review.issues:
-
                     st.markdown("**Issues**")
 
                     for issue in review.issues:
                         st.write(f"- {issue}")
 
                 if review.suggestions:
-
                     st.markdown("**Suggestions**")
 
                     for suggestion in review.suggestions:
@@ -704,7 +633,6 @@ if st.session_state.workflow_result is not None:
     execution_plan = result.get("execution_plan")
 
     if execution_plan:
-
         st.divider()
 
         st.markdown(
@@ -717,41 +645,27 @@ if st.session_state.workflow_result is not None:
         st.write(execution_plan.execution_summary)
 
         for step in execution_plan.action_steps:
-
             with st.container(border=True):
-
-                st.markdown(
-                    f"**Step {step.step} — {step.priority.upper()}**"
-                )
+                st.markdown(f"**Step {step.step} — {step.priority.upper()}**")
 
                 st.write(step.description)
 
                 if step.related_tasks:
-
-                    st.caption(
-                        "Related tasks: "
-                        + ", ".join(step.related_tasks)
-                    )
+                    st.caption("Related tasks: " + ", ".join(step.related_tasks))
 
         st.markdown("### Stakeholder communications")
 
         for communication in execution_plan.stakeholder_communications:
-
             with st.expander(
-                f"{communication.stakeholder_role} — "
-                f"{communication.communication_type}"
+                f"{communication.stakeholder_role} — {communication.communication_type}"
             ):
-
-                st.caption(
-                    f"Urgency: {communication.urgency.upper()}"
-                )
+                st.caption(f"Urgency: {communication.urgency.upper()}")
 
                 st.write(communication.message)
 
     execution_artifacts = result.get("execution_artifacts", {})
 
     if execution_artifacts:
-
         st.divider()
 
         st.markdown(
@@ -762,7 +676,6 @@ if st.session_state.workflow_result is not None:
         st.markdown("### Download artifacts")
 
         for artifact_name, artifact_path in execution_artifacts.items():
-
             path = Path(artifact_path)
 
             if not path.is_file():

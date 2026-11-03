@@ -1,4 +1,3 @@
-
 from pathlib import Path
 from xml.sax.saxutils import escape
 
@@ -229,8 +228,7 @@ def generate_recovery_report(
 
     story.append(
         Paragraph(
-            f"<b>Recommendation:</b> "
-            f"{escape(recovery_plan.recommendation)}",
+            f"<b>Recommendation:</b> {escape(recovery_plan.recommendation)}",
             body_style,
         )
     )
@@ -256,8 +254,7 @@ def generate_recovery_report(
     else:
         story.append(
             Paragraph(
-                f"<b>Search query:</b> "
-                f"{escape(resource_scout_result.search_query)}",
+                f"<b>Search query:</b> {escape(resource_scout_result.search_query)}",
                 body_style,
             )
         )
@@ -270,7 +267,6 @@ def generate_recovery_report(
         )
 
         if resource_scout_result.candidates:
-
             for index, candidate in enumerate(
                 resource_scout_result.candidates,
                 start=1,
@@ -316,9 +312,7 @@ def generate_recovery_report(
                     )
 
                 availability_status = (
-                    "Confirmed"
-                    if candidate.availability_confirmed
-                    else "Not confirmed"
+                    "Confirmed" if candidate.availability_confirmed else "Not confirmed"
                 )
 
                 story.append(
@@ -333,8 +327,7 @@ def generate_recovery_report(
         else:
             story.append(
                 Paragraph(
-                    "The search was performed, but no usable candidates "
-                    "were returned.",
+                    "The search was performed, but no usable candidates were returned.",
                     body_style,
                 )
             )

@@ -1,4 +1,3 @@
-
 from pathlib import Path
 
 from waymark.artifacts.recovery_report import generate_recovery_report

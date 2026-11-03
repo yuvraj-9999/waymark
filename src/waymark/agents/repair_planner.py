@@ -1,4 +1,3 @@
-
 from pydantic import BaseModel
 
 from waymark.config import settings
@@ -37,7 +36,7 @@ def generate_recovery_plan(
     revised_schedule: Schedule,
     validation_errors: list[str],
     review_feedback: str | None = None,
-    previous_recovery_plan : RecoveryPlan | None = None,
+    previous_recovery_plan: RecoveryPlan | None = None,
 ) -> RecoveryPlan:
     """Generate or revise recovery strategies using deterministic analysis."""
 
@@ -51,8 +50,11 @@ def generate_recovery_plan(
             This is a revision of a previously rejected recovery plan.
 
             PREVIOUS RECOVERY PLAN:
-            {previous_recovery_plan.model_dump_json(indent=2)
-            if previous_recovery_plan else "Not available"}
+            {
+            previous_recovery_plan.model_dump_json(indent=2)
+            if previous_recovery_plan
+            else "Not available"
+        }
 
             REVIEWER FEEDBACK:
             {review_feedback}

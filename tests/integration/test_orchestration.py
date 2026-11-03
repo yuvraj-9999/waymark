@@ -109,34 +109,34 @@ def test_complete_orchestration_workflow(monkeypatch):
     )
 
     execution_plan = ExecutionPlan(
-    action_steps=[
-        ExecutionStep(
-            step=1,
-            description="Coordinate the revised decoration schedule.",
-            related_tasks=["B", "C"],
-            priority="high",
-        ),
-        ExecutionStep(
-            step=2,
-            description="Confirm final inspection timing.",
-            related_tasks=["E"],
-            priority="medium",
-        ),
-    ],
-    stakeholder_communications=[
-        StakeholderCommunication(
-            stakeholder_role="Project Coordinator",
-            message="Please review the updated event preparation schedule.",
-            urgency="high",
-            communication_type="email",
-        )
-    ],
-    execution_summary="Coordinate the revised event preparation schedule.",
+        action_steps=[
+            ExecutionStep(
+                step=1,
+                description="Coordinate the revised decoration schedule.",
+                related_tasks=["B", "C"],
+                priority="high",
+            ),
+            ExecutionStep(
+                step=2,
+                description="Confirm final inspection timing.",
+                related_tasks=["E"],
+                priority="medium",
+            ),
+        ],
+        stakeholder_communications=[
+            StakeholderCommunication(
+                stakeholder_role="Project Coordinator",
+                message="Please review the updated event preparation schedule.",
+                urgency="high",
+                communication_type="email",
+            )
+        ],
+        execution_summary="Coordinate the revised event preparation schedule.",
     )
 
-    mock_artifacts = {    
+    mock_artifacts = {
         "recovery_report": "artifacts/recovery_report.pdf",
-        "execution_checklist": "artifacts/execution_checklist.md"    ,
+        "execution_checklist": "artifacts/execution_checklist.md",
         "stakeholder_communications": "artifacts/stakeholder_communications.md    ",
     }
 

@@ -1,4 +1,3 @@
-
 from waymark.agents.analyst import analyze_disruption
 from waymark.agents.execution import generate_execution_plan
 from waymark.agents.repair_planner import generate_recovery_plan
@@ -90,7 +89,7 @@ def repair_planner_node(state: WaymarkState) -> dict:
         review_feedback=state.get("review_feedback"),
         previous_recovery_plan=state.get("recovery_plan"),
     )
-    
+
     return {
         "recovery_plan": recovery_plan,
         "revision_count": state.get("revision_count", 0) + 1,
@@ -112,7 +111,6 @@ def reviewer_node(state: WaymarkState) -> dict:
     ]
 
     for strategy_review in recovery_review.strategy_reviews:
-
         feedback_parts.append(
             f"Strategy: {strategy_review.strategy_name}\n"
             f"Acceptable: {strategy_review.is_acceptable}\n"
