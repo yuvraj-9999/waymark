@@ -137,6 +137,27 @@ This separation helps make the recovery process more structured and reliable.
 
 ---
 
+## Why Hybrid AI and Deterministic Logic?
+
+Waymark deliberately separates AI reasoning from operations that require
+consistent and predictable results.
+
+| Responsibility | Approach |
+|---|---|
+| Disruption interpretation | AI |
+| Recovery strategy generation | AI |
+| Resource discovery | AI-assisted search |
+| Dependency analysis | Deterministic logic |
+| Schedule recalculation | Deterministic logic |
+| Schedule validation | Deterministic logic |
+| Strategy review | AI-assisted review with validation |
+
+This hybrid architecture reduces reliance on LLMs for calculations and
+constraint-sensitive operations while preserving their strengths in
+reasoning, interpretation, and planning.
+
+---
+
 ## Key Features
 
 - **Dependency-aware impact analysis** — Understand how disruptions propagate through connected tasks.
