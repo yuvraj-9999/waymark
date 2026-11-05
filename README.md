@@ -351,6 +351,18 @@ Streamlit will provide a local URL to open the application in your browser.
 
 Waymark includes automated tests for validating its scheduling and recovery logic.
 
+### Test Coverage
+
+The test suite covers:
+
+- Dependency graph construction and analysis
+- Disruption impact assessment
+- Schedule generation and replanning
+- Schedule comparison
+- Schema validation
+- Schedule constraint validation
+- Workflow orchestration
+
 Run the test suite:
 
 ```bash
