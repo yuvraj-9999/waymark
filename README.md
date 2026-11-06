@@ -385,27 +385,21 @@ uv run ruff check . --fix
 
 ## Design Principles
 
-### Deterministic scheduling, AI-assisted decisions
+### Separation of Responsibilities
 
-Scheduling dates and dependency constraints should not depend on an LLM's ability to perform arithmetic consistently.
+Each agent and system component has a clearly defined responsibility, making the workflow easier to maintain, test, and extend.
 
-Waymark uses deterministic logic for schedule calculations and validation while using AI for tasks that benefit from interpretation, research, and strategic reasoning.
+### Validation Before Execution
 
-### Specialized responsibilities
+Recovery strategies are reviewed and validated before they proceed to execution.
 
-Each agent has a focused role. This makes the workflow easier to understand, test, and extend.
+### Preserve Unaffected Work
 
-### Review before execution
+Replanning focuses on impacted tasks and their dependencies while preserving unaffected tasks whenever possible.
 
-Recovery strategies are reviewed before being passed to the execution stage.
+### Human-Readable Recovery
 
-### Preserve unaffected work
-
-A disruption should not unnecessarily invalidate tasks that remain feasible.
-
-### Human-readable recovery
-
-A recovery plan should be understandable to the person managing the project—not just to the agents that generated it.
+Recovery decisions and revised schedules should be understandable to project stakeholders, not just the system generating them.
 
 ---
 
