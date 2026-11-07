@@ -172,6 +172,16 @@ reasoning, interpretation, and planning.
 
 ---
 
+## Sample Artifacts
+
+Waymark generates structured recovery documents to support project execution and communication.
+
+- [Recovery Report](artifacts/recovery_report.pdf) — Detailed disruption analysis and recovery plan.
+- [Execution Checklist](artifacts/execution_checklist.md) — Actionable steps for implementing the recovery strategy.
+- [Stakeholder Communications](artifacts/stakeholder_communications.md) — Communication materials for keeping stakeholders informed.
+
+---
+
 ## Project Structure
 
 ```text
